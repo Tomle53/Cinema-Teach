@@ -1,7 +1,8 @@
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
-
+from io import StringIO
+import csv
 #Calcul du masque d'un objet par soustraction 
 def calcul_masque (image, gray_fond, seuil):
     gray_frame=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
@@ -43,13 +44,13 @@ def video_en_image(video):
     return total_frame
 
 #Fonction principal qui prend en paramètre une vidéo et la transforme en un tableau avec l'ensemble des centres de l'objet
-def video_en_centre(video):
+def video_en_donne(video):
     total_frame=video_en_image(video=video)
-    tab_centre=[]
+    tab_donne=[]
     fond=cv2.imread("../cache/image_0.png")
     gray_fond = cv2.cvtColor(fond, cv2.COLOR_BGR2GRAY)
     for i in range (total_frame):
         image=cv2.imread(f"../cache/image_{i}.png")
         masque=calcul_masque(image=image,gray_fond=gray_fond,seuil=10)
-        tab_centre.append(calcul_centre(masque=masque))
-    return tab_centre
+        tab_donne.append((calcul_centre(masque=masque),i/(video.get(cv2.CAP_PROP_FPS))))
+    return tab_donne
